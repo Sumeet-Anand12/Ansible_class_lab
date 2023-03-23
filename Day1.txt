@@ -1,4 +1,4 @@
-Lab - 
+Lab - https://github.com/devopsschool-training-notes/Ansible-astrazeneca-June-2020
 	AWS
 
 Start - 9:30 AM - 5:30 PM
