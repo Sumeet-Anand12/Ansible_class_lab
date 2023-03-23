@@ -1,0 +1,463 @@
+What is inventory?
+	- Concept which would have following...
+	- localhost
+	- List of IP add over command line
+	- List of IP add in file 		INI format
+	- List of IP add in script		anything
+	- List of IP add in directory
+
+
+ansible all -i 13.232.125.254,13.233.229.147, -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147, -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147, -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+
+
+ansible all -i 13.232.125.254,13.233.229.147, -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147, -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147,13.232.125.254,13.233.229.147, -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b  
+  
+
+13.232.108.187
+===============================================
+15.206.178.95
+52.66.255.58
+
+
+inventory
+--------------------
+- can be a file also
+- Name of the file can be anything.
+- Location can be anything
+- INI FORMAT
+- Default - /etc/ansible/hosts
+- List of ip add. sep by new line.
+- Inventory would have GROUP
+- Inventory would have BEHAVIOURAL PARAM
+- Inventory would have GROUP OF GROUP
+- Inventory would have VAR
+
+
+
+---------------------
+$ sudo yum install wget -y
+$ wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ sudo rpm -i epel-release-latest-7.noarch.rpm
+$ sudo yum install ansible -y
+----------------------
+[root@ip-172-31-17-140 ~]# more inventory
+13.232.108.187
+15.206.178.95
+52.66.255.58
+[root@ip-172-31-17-140 ~]#
+
+ansible all -i 13.232.125.254,13.233.229.147, -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147, -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible all -i 13.232.125.254,13.233.229.147, -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+
+ansible all -i inventory -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible all -i inventory -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible all -i inventory -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+
+[web]
+13.232.108.187
+15.206.178.95
+
+[app]
+52.66.255.58
+
+[db]
+52.66.255.58
+db2
+db3.ddd.com
+
+ansible web -i inventory -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible web -i inventory -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible web -i inventory -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+
+ansible web,app -i inventory -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible web,app -i inventory -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible web,app -i inventory -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+-------------
+ansible web,app -i inventory -i inv -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible all -i inventory -i inv -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible web,app -i inventory -i inv -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+-------------
+
+
+ansible web,app -i inventory -m yum -a"name=httpd state=present" -u ec2-user --key-file=remote.pem -b
+ansible web,app -i inventory -m copy -a"src=index.html dest=/var/www/html" -u ec2-user --key-file=remote.pem -b
+ansible web,app -i inventory -m service -a"name=httpd state=started" -u ec2-user --key-file=remote.pem -b
+
+
+Each host may have diff
+- user
+- password
+- key
+- sudo behav
+- ssh port
+- python
+----------------------
+Host BEHAVIOURAL PARAM.
+https://docs.ansible.com/ansible/2.7/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
+
+
+[web]
+13.232.108.187 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes
+15.206.178.95 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes
+
+[app]
+52.66.255.58 ansible_user=ec2-user
+
+[db]
+52.66.255.58 ansible_connection=paramiko
+52.66.255.52 ansible_user=root
+52.66.255.53 ansible_user=user1
+52.66.255.54 ansible_user=ec2-user ansible_ssh_pass=password ansible_become=yes
+52.66.255.55 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes ansible_become_pass=password
+db2	ansible_host=52.66.255.56
+db3.ddd.com ansible_port=23
+
+
+
+ansible web,app -i inventory -m yum -a"name=httpd state=present" 
+ansible web,app -i inventory -m copy -a"src=index.html dest=/var/www/html"
+ansible web,app -i inventory -m service -a"name=httpd state=started"
+
+
+
+[web]
+13.232.108.187 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes
+15.206.178.95 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes
+
+[app]
+52.66.255.58 ansible_user=ec2-user
+
+[gof]
+web
+app
+
+[gog:children]
+web
+app
+
+[db]
+52.66.255.58 ansible_connection=paramiko
+52.66.255.52 ansible_user=root
+52.66.255.53 ansible_user=user1
+52.66.255.54 ansible_user=ec2-user ansible_ssh_pass=password ansible_become=yes
+52.66.255.55 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes ansible_become_pass=password
+db2	ansible_host=52.66.255.56
+db3.ddd.com ansible_port=23
+
+
+ansible gog -i inventory -m yum -a"name=httpd state=present" 
+ansible gog -i inventory -m copy -a"src=index.html dest=/var/www/html"
+ansible gog -i inventory -m service -a"name=httpd state=started"
+
+ACS
+===========================
+13.232.108.187
+
+ARS
+===========================
+
+Madhuvanthiy Chandar	13.127.95.177
+Tamilselvan Rajapandian	13.233.44.195
+singaravelan senthilkarasu	15.206.167.128
+Babu Selvam	13.233.233.22
+Kannan Jayakumar	3.6.93.6
+Dhyaneswaran K J	13.233.125.55
+Rajsh Selvaraj	13.234.232.115
+Nagesh kumar	15.206.178.95
+Guru Pandian	13.233.206.198
+Venkatesh Damodharan	13.233.183.15
+R Mathagi Arun	15.206.170.33
+Balamurugan	13.233.198.91
+Balaji T R	13.233.114.74
+mohit	13.235.248.53
+Sivashankar Murugan	15.206.75.62
+Surendhiran	52.66.198.161
+Suresh Anandan	52.66.255.58
+Lakshminarayanan	13.232.25.155
+James	13.233.186.245
+Babu Srinivasan	13.233.247.76
+Sridhar Sekar	13.127.241.215
+	35.154.19.228
+
+
+Assignment
+https://www.devopsschool.com/blog/ansible-inventory-lab-excercise-part-1/
+=========================================================================
+
+
+ansible gog -i inventory -m yum -a"name=httpd state=present" 
+ansible gog -i inventory -m copy -a"src=index.html dest=/var/www/html"
+ansible gog -i inventory -m service -a"name=httpd state=started"
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/test.txt state=touch
+  - name: copy a file
+    copy: dest=/var/www/html/ src="index.html"
+...
+
+ansible-playbook -i temp play.yaml
+==============================================
+Deploy a Application "Wordpress"
+-------------------------------------
+WEB - Apache
+APP - PHP
+DB - MySQL
+Software - Wordpress
+=============================
+Step 1- Install mysql
+Step 2- Start mysql 
+Step 3- Install XAMPP
+Step 4- Intall wordpress
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/test.txt state=touch
+  - name: copy a file
+    copy: dest=/var/www/html/ src="index.html"
+...
+
+/etc/yum.repos.d/mysql-community.repo
+
+[mysql80-community]
+name=MySQL 8.0 Community Server
+baseurl=http://repo.mysql.com/yum/mysql-8.0-community/el/6/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+
+
+sudo yum install mysql-community-server
+
+
+sudo service mysqld start
+
+$ cd /opt
+> wget https://www.apachefriends.org/xampp-files/5.6.32/xampp-linux-x64-5.6.32-0-installer.run
+> chmod 755 xampp-linux-x64-5.6.32-0-installer.run
+> ./xampp-linux-x64-5.6.32-0-installer.run
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  tasks:
+  - name: copy a file
+    copy: dest=/etc/yum.repos.d/ src="mysql-community.repo"
+  - name: Install the httpd apps
+    yum: name=mysql-community-server state=present
+  - name: start the httpd service
+    service: name=mysqld state=started
+...
+
+wget - download a file. 
+	Which file? - 
+		rpm
+
+shell 
+Step 1 - Download a repo using wget (rpm)
+Step 2 - Install a repo
+Step 3 - instal mysql-community-server
+
+shell 
+
+Step 1 - Download a package using wget
+Step 2 - instal mysql-community-server rpm  SHELL 
+wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm
+yum update
+
+1
+2
+sudo yum install mysql-server
+sudo systemctl start mysqld
+
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  tasks:
+  - name: Download mysql-community-release-el7-5.noarch.rpm
+    get_url:
+      url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+      dest: /tmp
+      mode: '0755'
+  - name: Run a command that uses non-posix shell-isms 
+    shell: rpm -ivh /tmp/mysql-community-release-el7-5.noarch.rpm
+    args:
+      executable: /bin/bash
+  - name: Install the httpd apps
+    yum: update_cache=yes
+  - name: Install the httpd apps
+    yum: name=mysql-server state=present
+  - name: start the httpd service
+    service: name=mysqld state=started
+...
+
+shell
+command
+script
+exec
+===========================================
+
+Assignment - 
+https://www.devopsschool.com/blog/ansible-playbook-lab-excercise-part-2/
+===================================================================================
+files
+templates
+Handlers
+---------------------------------------------------------------------------
+
+
+
+
+
+How to declare a variable playbook
+--------------------------------
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  vars:
+    myname: rajesh
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/test.txt state=touch
+  - name: copy a file
+    copy: dest=/var/www/html/ src="index.html"
+  - debug:
+      msg: My Name is {{ myname }} 
+...
+
+templates
+=========================
+templates would help you to change intrro* vars dynamically.
+
+Python - Jinja2
+
+Step 1- Convert a template file info .j2
+Step 2 - Declare any var which you want to change during run time in .j2
+Step 3 - using Module called "template"
+
+
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  vars:
+    myname: rajesh
+    port: 81
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=stopped
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/test.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+  - debug:
+      msg: My Name is {{ myname }} 
+
+...
+=====================================
+How to deubg Ansible running?
+---------------------------------------------
+
+How to check syntax issues before rnning Ansible?
+ - --syntax-check
+ansible-playbook --syntax-check -i temp 2.yaml
+
+How to do Dry run?
+ansible-playbook --check -i temp 2.yaml
+
+Message Level
+	
+ 1086  ansible-playbook -i temp 2.yaml -v
+ 1087  clear
+ 1088  ansible-playbook -i temp 2.yaml -vv
+ 1089  ansible-playbook -i temp 2.yaml -vvv
+ 1090  clear
+ 1091  ansible-playbook -i temp 2.yaml -vvvv
+ 1092  clear
+ 1093  ansible-playbook -i temp 2.yaml -vvvvv
+ 1094  clear
+ 1095  ansible-playbook -i temp 2.yaml -vvvvvv
+
+
+==================HANDLERS==========================
+---
+- name: This sets up an httpd webserver
+  hosts: dev
+  vars:
+    myname: rajesh
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/test.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - debug:
+      msg: My Name is {{ myname }} 
+ 
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+
+
+
+...
+
+
+
+
