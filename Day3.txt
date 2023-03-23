@@ -1,0 +1,720 @@
+Variables
+=============
+https://www.devopsschool.com/tutorial/ansible/variables/index.html
+
+- PLAYBOOK
+- Inventory 
+- Roles
+----------------------------------------
+TYPES OF VARIABLE
+	- CUSTOM VARIABLES - WE Define  - Change - Diff place - Scope - Predence
+	- FACT Variable - System define - CANT Change
+
+
+Playbook
+==========================================================
+
+
+ACS - 13.234.19.61
+======================================
+---
+- name: This sets up an httpd webserver
+  hosts: localhost
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - debug:
+      msg: My Name is {{ myname }} 
+ 
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+===============================
+Ansible variables-3 external files in playbook
+===========================================
+
+---
+- name: This sets up an httpd webserver
+  hosts: localhost
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+  vars_files:
+    - "vars.yaml"
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - debug:
+      msg: My Name is {{ myname }} 
+ 
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+------------------------
+---
+- name: This sets up an httpd webserver
+  hosts: localhost
+  vars_files:
+    - "vars.yaml"
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - debug:
+      msg: My Name is {{ myname }} 
+ 
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+-------------------------------------------------
+
+---------------------------------------------------
+
+Ansible variables-5 vars prompt
+--------------------------------------------------
+
+---
+- name: This sets up an httpd webserver
+  hosts: localhost
+  vars_files:
+    - "vars.yaml"
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - debug:
+      msg: My Name is {{ myname }}
+  - debug:
+      msg: My Name is {{ version }}
+
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+=====================================================
+Ansible variables-6 include vars using include vars into task
+=============================================================
+
+
+---
+- name: This sets up an httpd webserver
+  hosts: localhost
+  vars_files:
+    - "vars.yaml"
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - name: include default step variables
+    include_vars: tasks_var.yml
+  - debug:
+      msg: My Name is {{ myname }}
+  - debug:
+      msg: My Name is {{ version }}
+
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+=============================================================
+Ansible variables-7 Pass variable to ansible playbook in the command line?
+=============================================================
+
+ansible-playbook var8.yaml -e "version=1.23.45 myname=rajesh-in-commandline"
+
+-e "version=1.23.45 myname=rajesh-in-commandline"
+
+
+============================================
+If you declare a variables in PLAYBOOK - 
+- vars in playbook
+- vars in prompt in playbook
+- vars in vars_files in playbook
+- vars in include @ task level in playbook
+- command line
+
+
+======================================================================================
+======================================================================================
+======================================================================================
+variables in Inventory
+-------------------------------------------------
+
+
+
+---
+- name: This sets up an httpd webserver
+  hosts: web
+  vars_files:
+    - "vars.yaml"
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - name: include default step variables
+    include_vars: tasks_var.yml
+  - debug:
+      msg: My Name is {{ myname }}
+  - debug:
+      msg: My Name is {{ version }}
+  - debug:
+      msg: My Name is {{ varinhost }}
+
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+
+
+
+
+---------------------------------------
+
+[web]
+13.234.19.61 ansible_user=ec2-user ansible_ssh_private_key_file=remote.pem ansible_become=yes
+
+
+[web:vars]
+varinhost=rajesh-in-host
+
+---------------------------------------
+[web]
+13.234.19.61   
+
+
+[web:vars]
+varinhost=rajesh-in-host
+ansible_user=ec2-user
+ansible_ssh_private_key_file=remote.pem
+ansible_become=yes
+---------------------------------------
+
+
+
+
+SO MANY 
+	HOST LEVEL
+	GROUP LEVEL
+
+Ans - 
+	host_vars
+		- filename MUST match with a name of the HOST. YAML
+	group_vars
+		- filename MUST match with a name of the GROUP. YAML
+
+----------------
+If you declare a variables in Inventory
+-------------------
+vars in inventory
+vars in group_vars ---ALL
+vars in group_vars ---group
+vars in host_vars ---host
+
+====================================================================
+FACT Variable
+	- FACT OF SERVER - MACHINE
+
+
+How to get SYSTEM information?
+====================================
+Ansible uses - factor
+
+How to get SYSTEM info using Ansible and using factor?
+==============================================
+setup 
+	- module
+
+<h1>
+Hello, 	ansible_distribution is {{ ansible_distribution }} and ansible_architecture {{ ansible_architecture }} and {{ ansible_os_family }}.</h1>
+ 
+ansible_distribution
+ansible_architecture
+ansible_os_family
+
+https://docs.ansible.com/ansible/latest/modules/setup_module.html
+
+
+
+
+- name: This sets up an httpd webserver
+  hosts: web
+  vars_files:
+    - "vars.yaml"
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+    when: ansible_os_family == "RedHat"
+  - name: Install the httpd apps
+    yum: name=apache2 state=present
+    when: ansible_os_family == "Debian"
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - name: "shut down Debian flavored systems"
+    command: /sbin/shutdown -t now
+    when: ansible_os_family == "Debian"
+  - debug:
+      msg: My Name is Rajesh in RHEL
+    when: ansible_os_family == "RedHat"
+  - debug:
+      msg: My Name is Rajesh in UBUNTU
+    when: ansible_os_family == "Debian"
+
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+---------------------
+https://www.devopsschool.com/blog/anatomy-of-ansible-play-defined/
+-------------------------------------------
+We use FACT variable In Condition
+--------------------------------------------
+if windows
+	run windows module
+if linux- ub
+	run apt
+if linux - rhel 
+	run yum
+--------------------------------------------
+https://www.devopsschool.com/tutorial/ansible/ansible-conditional-programming-playbooks.html
+
+
+      - name: "shut down Debian flavored systems"
+        command: /sbin/shutdown -t now
+        when: ansible_os_family == "Debian"
+
+
+      - name: "shut down CentOS 6 systems"
+        command: touch /opt/verizon.txt
+        when:
+          - (ansible_distribution == "RedHat") or (ansible_distribution_major_version == "7.5")
+       
+=====================================================================================
+
+Ansible Inventory Lab & Excercise – Part 1
+--------------------------------------------
+https://www.devopsschool.com/blog/ansible-inventory-lab-excercise-part-1/
+Naming Convention of Dir- AILEp1
+
+
+Ansible Variable Lab & Excercise – Part 1
+https://www.devopsschool.com/blog/ansible-variable-lab-excercise-part-1
+Naming Convention of Dir- AVLEp1
+
+Ansible Variable Lab & Excercise – Part 2
+--------------------------------------------
+https://www.devopsschool.com/blog/ansible-variable-lab-excercise-part-2/
+Naming Convention of Dir- AVLEp2
+
+Ansible Playbook Lab & Excercise – Part 3
+-------------------------------------------
+https://www.devopsschool.com/blog/ansible-playbook-lab-excercise-part-3/
+Naming Convention of Dir- APLEp3
+
+=======================================================================================================
+=======================================================================================================
+======================================PLAYBOOK=================================================================
+Variables???		---- TO MANY VARIABLES?
+Templates???		---- TO MANY TEMPLATES
+Files?			 ---- TO MANY FILES
+Handlers?????		---- TO MANY HANDERS
+TASKS???		---- TO MANY TASKS
+=======================================================
+ How to 
+	- org well
+	- Manage well
+	- Share with ease
+	- Run with ease?
+	of 
+
+		Variables???		---- TO MANY VARIABLES?
+		Templates???		---- TO MANY TEMPLATES
+		Files?			 ---- TO MANY FILES
+		Handlers?????		---- TO MANY HANDERS
+		TASKS???		---- TO MANY TASKS
+		Plays
+---------------------------------------------------------------
+		ROLE
+			Fixed Directory Struc
+
+
+
+- name: This sets up an httpd webserver
+  hosts: web
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+  tasks:
+  - name: Install the httpd apps
+    yum: name=httpd state=present
+    when: ansible_os_family == "RedHat"
+  - name: Install the httpd apps
+    yum: name=apache2 state=present
+    when: ansible_os_family == "Debian"
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: Template a file to httpd.conf.j2
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+      - THIS IS handlers - restart
+  - name: start the httpd service
+    service: name=httpd state=started
+  - name: create a empty fle
+    file: dest=/opt/{{ age }}.txt state=touch
+  - name: Template a file to index.html.j2
+    template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify:
+      - THIS IS handlers - restart
+  - name: "shut down Debian flavored systems"
+    command: /sbin/shutdown -t now
+    when: ansible_os_family == "Debian"
+  - debug:
+      msg: My Name is Rajesh in RHEL
+    when: ansible_os_family == "RedHat"
+  - debug:
+      msg: My Name is Rajesh in UBUNTU
+    when: ansible_os_family == "Debian"
+
+  handlers:
+  - name: THIS IS handlers - restart
+    service: name=httpd state=restarted
+
+
+SCNARIO - 
+PLAYBOOK 
+	PLAY
+	PLAY
+	PLAY
+
+SCNARIO 1 - ONE PLAYBOOK CAN CALL 2 PLAY(Sep file)
+SCNARIO 1 - ONE PLAYBOOK CAN CALL Seprate Tasks file.
+	
+https://www.devopsschool.com/blog/ansible-include-scnario-with-list-of-plays-or-tasks/
+
+- name: This sets up an httpd webserver
+  hosts: web
+  vars_prompt:
+    - name: "version"
+      prompt: "Which version Do you want to install?"
+      private: no
+  vars:
+    myname: rajesh
+    age: 23
+    port: 80
+
+
+  tasks:
+    - name: Include task list in play
+      include: one.yaml
+    - name: Include task list in play
+      include: two.yaml
+
+=====================================================
+=====================================================
+=====================================================
+=====================================================
+
+- include: play1.yaml
+- include: play2.yaml
+
+
+
+
+- name: This sets up an httpd webserver
+  hosts: web
+
+  tasks:
+  - debug:
+      msg: My Name is Rajesh in RHEL
+
+
+- name: This sets up an httpd webserver
+  hosts: web
+
+  tasks:
+  - debug:
+      msg: My Name is Rajesh in Play2
+
+
+
+=======================================================================================================
+=======================================================================================================
+======================================PLAYBOOK=================================================================
+Variables???		---- TO MANY VARIABLES?
+Templates???		---- TO MANY TEMPLATES
+Files?			 ---- TO MANY FILES
+Handlers?????		---- TO MANY HANDERS
+TASKS???		---- TO MANY TASKS
+=======================================================
+ How to 
+	- org well
+	- Manage well
+	- Share with ease
+	- Run with ease?
+	of 
+
+		Variables???		---- TO MANY VARIABLES?
+		Templates???		---- TO MANY TEMPLATES
+		Files?			 ---- TO MANY FILES
+		Handlers?????		---- TO MANY HANDERS
+		TASKS???		---- TO MANY TASKS
+
+---------------------------------------------------------------
+		ROLE
+			Fixed Directory Struc
+
+
+
+[root@ip-172-31-17-140 rolework]# ansible-galaxy init web
+- Role web was created successfully
+[root@ip-172-31-17-140 rolework]# tree
+.
+└── web
+    ├── defaults			# Default vars
+    │   └── main.yml
+    ├── files				# for files and script used in tasks.
+    ├── handlers			# For all Handlers tasks
+    │   └── main.yml
+    ├── meta				# For meta info about Roles
+    │   └── main.yml
+    ├── README.md
+    ├── tasks				# For all TASKS
+    │   └── main.yml
+    ├── templates			# For all .j2 files
+    ├── tests				# AT and UT TEST
+    │   ├── inventory
+    │   └── test.yml
+    └── vars				# user defined vars
+        └── main.yml
+
+--------------------------------------
+
+- name: This sets up an httpd webserver
+  hosts: web
+
+  roles:
+  - web
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FUNCTONS
+=================================
+Lookups
+
+
+
+
